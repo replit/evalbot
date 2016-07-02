@@ -9,13 +9,12 @@
   "author": "repl.it",
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^1.9.2"
-  },
-  "dependencies": {
     "babel-cli": "^6.10.1",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.9.0",
+    "babel-register": "^6.9.0"
+  },
+  "dependencies": {
     "botkit": "^0.2.2",
     "firebase": "^3.1.0",
     "replit-client": "^0.4.0",
