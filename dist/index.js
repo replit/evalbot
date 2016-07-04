@@ -15,9 +15,16 @@ var _facebookbot = require('./facebookbot');
 
 var _facebookbot2 = _interopRequireDefault(_facebookbot);
 
+var _goo = require('goo.gl');
+
+var _goo2 = _interopRequireDefault(_goo);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function start(platform, platformConfig, serverOptions, firebaseOptions) {
+  // Google Api Key for shortening urls (see messagneHandlers.js)
+  _goo2.default.setKey(serverOptions.googleApiKey);
+
   var controller = void 0;
   var messageEvents = void 0;
   if (platform === 'slack') {
@@ -37,7 +44,7 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
           bots[bot.config.token] = bot;
         };
 
-        // Reloads bots incase of server restart
+        // Respawns bots incase of server restart
 
 
         controller.createWebhookEndpoints(controller.webserver);
@@ -92,9 +99,6 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
       var bot = controller.spawn({});
       controller.createWebhookEndpoints(controller.webserver, bot, function () {
         return console.log('fb bot started');
-      });
-      controller.on('facebook_optin', function (bot, message) {
-        bot.reply(message, 'Hey! I\'m a bot');
       });
     }
   });

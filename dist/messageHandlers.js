@@ -21,6 +21,10 @@ var _gentoken = require('./gentoken');
 
 var _gentoken2 = _interopRequireDefault(_gentoken);
 
+var _goo = require('goo.gl');
+
+var _goo2 = _interopRequireDefault(_goo);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 global.XMLHttpRequest = _xmlhttprequest.XMLHttpRequest; // used for replit-client
@@ -72,7 +76,6 @@ function handleEval(bot, message, replitApiKey) {
   } else if ((0, _languages.getLanguageKey)(message.match[1])) {
     var _langKey = (0, _languages.getLanguageKey)(message.match[1]);
     var code = removeCodeblocks(message.text).slice(message.match[1].length + 1);
-    console.log('code', code);
     replitEval(replitApiKey, _langKey, code).then(function (out) {
       return bot.reply(message, out);
     });
@@ -90,12 +93,12 @@ function handleEval(bot, message, replitApiKey) {
     }
     var _langKey2 = (0, _languages.getLanguageKey)(language + version);
     if (!_langKey2) {
-      bot.reply(message, 'The language you asked for or the format is not right.\n' + 'Your message should look like: ```@evalbot run language ```code``````\n' + 'You can type `@evalbot languages` to get a list of supported languages');
+      bot.reply(message, 'The language you asked for or the format is not correct.\n' + 'Your message should look like: \n' + '```@evalbot run language `​``code`​`````\n' + 'You can type `@evalbot languages` to get a list of supported languages');
       return;
     }
 
-    var _code = message.text.substring(message.text.indexOf('```') + 3, message.text.lastIndexOf('```'));
-    replitEval(replitApiKey, _langKey2, removeCodeblocks(_code)).then(function (out) {
+    var _code = removeCodeblocks(message.text).substring(message.text.indexOf('```') + 3, message.text.lastIndexOf('```'));
+    replitEval(replitApiKey, _langKey2, _code).then(function (out) {
       return bot.reply(message, out);
     });
   }
@@ -113,13 +116,26 @@ function replitEval(apiKey, language, code) {
   var repl = new _replitClient2.default('api.repl.it', '80', language, (0, _gentoken2.default)(apiKey));
 
   var messages = '';
-  return repl.evaluateOnce(removeCodeblocks(code), {
+  var out = '';
+  return repl.evaluateOnce(code, {
     stdout: function stdout(msg) {
       return messages += ' ' + msg;
     }
   }).then(function (_ref) {
     var error = _ref.error;
     var data = _ref.data;
-    return '```\n' + messages + '\n' + (error || '=>' + data) + '\n```';
+
+    out = '```\n' + messages + '\n' + (error || '=> ' + data) + '\n' + '```';
+  }).then(function () {
+    return getSessionShortUrl(language, code);
+  }).then(function (url) {
+    // remove http to avoid previews on slack
+
+    var urlMsg = 'Follow this link to run the code ' + 'in a repl environment with inputs: ' + url.replace('https://', ''); // No slack preview
+    return out + '\n' + urlMsg;
   });
+}
+
+function getSessionShortUrl(language, code) {
+  return _goo2.default.shorten('https://repl.it/languages/' + language + '?code=' + encodeURIComponent(code));
 }
