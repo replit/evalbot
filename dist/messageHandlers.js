@@ -82,7 +82,7 @@ function handleEval(bot, message, replitApiKey) {
   } else if ((0, _languages.getLanguageKey)(message.match[1])) {
     (function () {
       var langKey = (0, _languages.getLanguageKey)(message.match[1]);
-      var code = removeCodeblocks(message.text).slice(message.match[1].length + 1);
+      var code = removeCodeblocks(message.text);
       replitEval(replitApiKey, langKey, code).then(function (result) {
         return handleSendResult(langKey, code, result, bot.reply.bind(bot, message));
       });
@@ -123,7 +123,7 @@ function handleLanguages(bot, message) {
 }
 
 function removeCodeblocks(code) {
-  return code.replace(/(^```\w+)|(```$)/g, '');
+  return code.replace(/(^```(\w+)?)|(```$)/g, '');
 }
 
 function replitEval(apiKey, language, code) {
