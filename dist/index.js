@@ -38,6 +38,12 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
   }
 
   controller.setupWebserver(serverOptions.port, function (err, webserver) {
+    if (err) {
+      console.error('Failed to start server');
+      console.error(err.message);
+      console.error(err.stack);
+      process.exit();
+    }
     if (platform === 'slack') {
       (function () {
         var trackBot = function trackBot(bot) {
@@ -98,7 +104,21 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
     } else if (platform === 'facebook') {
       var bot = controller.spawn({});
       controller.createWebhookEndpoints(controller.webserver, bot, function () {
-        return console.log('fb bot started');
+        if (process.env.NODE_ENV !== 'production') {
+          var localtunnel = require('localtunnel');
+          var tunnel = localtunnel(serverOptions.port, function (err, tunnel) {
+            if (err) {
+              console.log(err);
+              process.exit();
+            }
+            console.log('Your bot is available on the web at the following URL: ' + tunnel.url + '/facebook/receive');
+          });
+          tunnel.on('close', function () {
+            console.log('Your bot is no longer available on the web at the localtunnnel.me URL.');
+            process.exit();
+          });
+        }
+        console.log('fb bot started');
       });
     }
   });
