@@ -16,7 +16,6 @@ add a bot user to your app. Then [create a firebase app](https://console.firebas
 You also need a google API for googl URL shortener.
 
 ### Facebook
-Follow these steps to  
 ```javascript
 const evalbot = require('evalbot')
 
