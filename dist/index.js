@@ -61,7 +61,7 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
             return;
           }
 
-          res.send('Success!');
+          res.redirect('https://repl.it/site/evalbot');
         });
         // Slack creates a bot for each team.
         // Make sure we connect only once for each team
@@ -132,4 +132,8 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
   });
 
   controller.hears(['langs', 'languages', 'supported languages'], messageEvents, _messageHandlers.handleLanguages);
+
+  controller.hears('help', messageEvents, function (bot, message) {
+    return bot.reply(message, 'Help page: https://repl.it/site/evalbot');
+  });
 }
