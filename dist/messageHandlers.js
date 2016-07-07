@@ -39,7 +39,6 @@ global.XMLHttpRequest = _xmlhttprequest.XMLHttpRequest; // used for replit-clien
 var maxMsgChunkLength = 300;
 
 function handleEval(bot, message, replitApiKey) {
-  console.log('evalling')
   var langKey = void 0;
   var askLanguage = function askLanguage(response, convo) {
     convo.ask('What language should I use?', function (response, convo) {
@@ -128,14 +127,11 @@ function handleLanguages(bot, message) {
 }
 
 function formatCode(code) {
-  console.log('pls')
-  console.log(code);
   // replace fences and language
   var formatted = code.replace(/(^```(\w+)?)|(```$)/g, '');
 
   // decode xml entities
   formatted = _entities2.default.encodeXML(formatted);
-  console.log(formatted);
   return formatted;
 }
 

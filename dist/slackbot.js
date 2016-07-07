@@ -8,7 +8,7 @@ exports.slackMessageEvents = undefined;
 exports.default = function (config, firebaseOptions) {
   return _botkit2.default.slackbot({
     storage: (0, _storage2.default)(firebaseOptions),
-    debug: true
+    debug: process.env.NODE_ENV !== 'production'
   }).configureSlackApp(config);
 };
 
