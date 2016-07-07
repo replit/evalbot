@@ -1,6 +1,6 @@
 {
   "name": "evalbot",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "botkit": "^0.2.2",
+    "entities": "^1.1.1",
     "firebase": "^3.1.0",
     "goo.gl": "^0.1.4",
     "replit-client": "^0.4.0",

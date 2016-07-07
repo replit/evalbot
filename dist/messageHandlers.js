@@ -27,6 +27,10 @@ var _goo = require('goo.gl');
 
 var _goo2 = _interopRequireDefault(_goo);
 
+var _entities = require('entities');
+
+var _entities2 = _interopRequireDefault(_entities);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 global.XMLHttpRequest = _xmlhttprequest.XMLHttpRequest; // used for replit-client
@@ -64,7 +68,7 @@ function handleEval(bot, message, replitApiKey) {
   };
   var askCode = function askCode(response, convo) {
     convo.ask('Type in code to eval', function (response, convo) {
-      var code = removeCodeblocks(response.text);
+      var code = formatCode(response.text);
       replitEval(replitApiKey, langKey, code).then(function (result) {
         handleSendResult(langKey, code, result, convo.say.bind(convo), convo.next.bind(convo));
       });
@@ -82,7 +86,7 @@ function handleEval(bot, message, replitApiKey) {
   } else if ((0, _languages.getLanguageKey)(message.match[1])) {
     (function () {
       var langKey = (0, _languages.getLanguageKey)(message.match[1]);
-      var code = removeCodeblocks(message.text);
+      var code = formatCode(message.text);
       replitEval(replitApiKey, langKey, code).then(function (result) {
         return handleSendResult(langKey, code, result, bot.reply.bind(bot, message));
       });
@@ -101,7 +105,7 @@ function handleEval(bot, message, replitApiKey) {
         version = '';
       }
       var langKey = (0, _languages.getLanguageKey)(language + version);
-      var code = removeCodeblocks(message.text.substring(message.text.indexOf('```'), message.text.lastIndexOf('```') + 3));
+      var code = formatCode(message.text.substring(message.text.indexOf('```'), message.text.lastIndexOf('```') + 3));
       if (!langKey || !code) {
         bot.reply(message, 'The language you asked for or the format is not correct.\n' + 'Your message should look like: \n' + '```@evalbot run language `​``code`​`````\n' + 'You can type `@evalbot languages` to get a list of supported languages');
         return {
@@ -122,8 +126,13 @@ function handleLanguages(bot, message) {
   bot.reply(message, (0, _languages.getSupportedLanguages)());
 }
 
-function removeCodeblocks(code) {
-  return code.replace(/(^```(\w+)?)|(```$)/g, '');
+function formatCode(code) {
+  // replace fences and language
+  var formatted = code.replace(/(^```(\w+)?)|(```$)/g, '');
+
+  // decode xml entities
+  formatted = _entities2.default.decodeXML(formatted);
+  return formatted;
 }
 
 function replitEval(apiKey, language, code) {
