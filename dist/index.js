@@ -22,6 +22,7 @@ var _goo2 = _interopRequireDefault(_goo);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function start(platform, platformConfig, serverOptions, firebaseOptions) {
+  console.log('starting')
   // Google Api Key for shortening urls (see messagneHandlers.js)
   _goo2.default.setKey(serverOptions.googleApiKey);
 
@@ -51,7 +52,15 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
         };
 
         // Respawns bots incase of server restart
+        // controller.storage.teams.all((err, teams) => {
+        //   if (err) {
+        //     throw err
+        //   }
 
+        //   teams.map(({ token }) => {
+        //     controller.spawn({ token }).startRTM()
+        //   })
+        // })
 
         controller.createWebhookEndpoints(controller.webserver);
         // Oauth redirect uri for slack
@@ -66,18 +75,6 @@ function start(platform, platformConfig, serverOptions, firebaseOptions) {
         // Slack creates a bot for each team.
         // Make sure we connect only once for each team
         var bots = {};
-        controller.storage.teams.all(function (err, teams) {
-          if (err) {
-            throw err;
-          }
-
-          teams.map(function (_ref) {
-            var token = _ref.token;
-
-            controller.spawn({ token: token }).startRTM();
-          });
-        });
-
         controller.on('create_bot', function (bot, config) {
           if (bots[bot.config.token]) {
             // already online
