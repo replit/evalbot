@@ -131,7 +131,7 @@ function formatCode(code) {
   var formatted = code.replace(/(^```(\w+)?)|(```$)/g, '');
 
   // decode xml entities
-  formatted = _entities2.default.encodeXML(formatted);
+  formatted = _entities2.default.decodeXML(formatted);
   return formatted;
 }
 
