@@ -3,7 +3,7 @@
 ```
 npm install --save evalbot
 ```
-
+[![Run on Repl.it](https://repl.it/badge/github/replit/evalbot)](https://repl.it/github/replit/evalbot)
 ## Getting started
 You need a repl.it API to use this bot, you can [get a free trial here](https://repl.it/site/api).
 
